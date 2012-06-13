@@ -6,28 +6,57 @@ package com.maximgalushka.concurrency.backery;
  * @author Maxim Galushka
  * @since 12.06.12
  */
-public class TimestampImpl implements Timestamp {
+public class TimestampImpl implements Timestamp{
 
+    private Integer threadId;
     private Integer label;
 
-    public TimestampImpl(Integer label) {
+    public TimestampImpl(Integer threadId, Integer label) {
+        this.threadId = threadId;
         this.label = label;
     }
 
-    @Override
-    public boolean compare(Timestamp timestamp) {
-        // TODO: implement this properly
-        return false;
-    }
+//    @Override
+//    public Integer compare(Timestamp timestamp) {
+//        if(!(timestamp instanceof TimestampImpl)) {
+//            throw new RuntimeException("RE!");
+//        }
+//
+//        TimestampImpl ti = (TimestampImpl) timestamp;
+//        Integer result = label.compareTo(ti.label);
+//        if(result == 0){
+//            return threadId.compareTo(ti.threadId);
+//        }
+//        return result;
+//    }
 
     @Override
+    public int compareTo(Timestamp timestamp) {
+        if(!(timestamp instanceof TimestampImpl)) {
+            throw new RuntimeException("RE!");
+        }
+
+        TimestampImpl ti = (TimestampImpl) timestamp;
+        Integer result = label.compareTo(ti.label);
+        if(result == 0){
+            return threadId.compareTo(ti.threadId);
+        }
+        return result;
+    }
+
+    public Integer getThreadId() {
+        return threadId;
+    }
+
+    public void setThreadId(Integer threadId) {
+        this.threadId = threadId;
+    }
+
     public Integer getLabel() {
         return label;
     }
 
-    @Override
-    public int compareTo(Timestamp o) {
-        // TODO: implement this properly
-        return 0;
+    public void setLabel(Integer label) {
+        this.label = label;
     }
 }

@@ -28,15 +28,29 @@ public class Bakery implements Lock {
         int i = threadId.get();
         flag[i] = true;
 
-        Timestamp t = new TimestampImpl(Collections.max(Arrays.asList(system.scan())).getLabel() + 1);
+        Timestamp max = Collections.max(Arrays.asList(system.scan()));
+        Timestamp next = new TimestampImpl(i, ((TimestampImpl) max).getLabel() + 1);
+        system.label(next, i);
 
+        while (check(flag, system, next, i)) {};
+    }
 
-        //while ((∃k != i)(flag[k] && (label[k],k) << (label[i],i))) {};
+    private static boolean check(boolean[] flag,
+                                 TimestampSystem system,
+                                 Timestamp timestamp,
+                                 int current){
+
+        for(int i=0; i<= flag.length; i++){
+            if (i == current) continue;
+            if(flag[i] && system.scan()[i].compareTo(timestamp) > 0)
+                return true;
+        }
+        return false;
     }
 
     @Override
     public void unlock() {
-
+        flag[threadId.get()] = false;
     }
 
 
